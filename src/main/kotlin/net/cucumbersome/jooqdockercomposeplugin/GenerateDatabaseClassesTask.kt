@@ -18,13 +18,21 @@ abstract class GenerateDatabaseClassesTask : DefaultTask() {
     @Internal
     fun getDbPassword() = getExtension().dbPassword.get()
 
+    @Internal
+    fun getDbMigrationLocation() = getExtension().dbMigrationLocation.getOrElse("src/main/resources/db/migration")
+
+    @Internal
+    fun getGeneratedClassesPath() = getExtension().generatedClassesPath.getOrElse(
+        project.layout.buildDirectory.dir("generated-jooq")
+    )
+
     @InputFiles
     @PathSensitive(PathSensitivity.RELATIVE)
-    val inputDirectory = project.objects.fileCollection().from("src/main/resources/db/migration")
+    val inputDirectory = project.objects.fileCollection().from(getDbMigrationLocation())
 
     @OutputDirectory
     val outputDirectory =
-        project.objects.directoryProperty().convention(project.layout.buildDirectory.dir("generated-jooq"))
+        project.objects.directoryProperty().convention(getGeneratedClassesPath())
 
 
     init {
@@ -62,7 +70,6 @@ abstract class GenerateDatabaseClassesTask : DefaultTask() {
             "jdbc:postgresql://$host:$port/postgres"
         }
         return dataBaseUrl ?: throw IllegalStateException("Cannot find database url")
-
 
 
     }
