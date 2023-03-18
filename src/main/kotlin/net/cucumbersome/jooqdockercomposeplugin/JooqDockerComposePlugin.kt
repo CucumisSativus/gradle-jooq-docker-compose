@@ -6,7 +6,8 @@ import org.gradle.api.Project
 class JooqDockerComposePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.configurations.create("jdbc")
-        project.tasks.create("generateJooqClasses", GenerateDatabaseClasses::class.java) {
+        project.extensions.create("jooqDockerComposePlugin", JooqDockerComposePluginExtension::class.java)
+        project.tasks.create("generateJooqClasses", GenerateDatabaseClassesTask::class.java) {
             group = "jooq"
         }
     }
